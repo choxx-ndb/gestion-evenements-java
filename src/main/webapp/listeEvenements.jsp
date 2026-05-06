@@ -2,12 +2,14 @@
 <%@ page import="java.util.List" %>
 <%@ page import="model.Evenement" %>
 <%@ page import="model.Utilisateur" %>
+<%@ page import="java.time.LocalDateTime" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Liste des Événements</title>
+    
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; }
         .container { width: 90%; margin: auto; overflow: hidden; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; margin-top: 20px; }
@@ -29,6 +31,18 @@
 
     <div class="container">
         <h2>Calendrier des Événements</h2>
+			        <%
+			    String message = (String) session.getAttribute("message");
+			    if (message != null) {
+			%>
+			    <div style="padding: 12px; background-color: #d4edda; color: #155724; 
+			                border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
+			        <%= message %>
+			    </div>
+			<%
+			        session.removeAttribute("message");
+			    }
+			%>
 
         <%-- Le bouton Ajouter n'est visible que pour l'administrateur --%>
         <% if (currentUser != null && "admin".equals(currentUser.getRole())) { %>
@@ -39,6 +53,7 @@
             <thead>
                 <tr>
                     <th>Titre</th>
+                    
                     <th>Date</th>
                     <th>Lieu</th>
                     <th>Catégorie</th>
@@ -48,30 +63,85 @@
             </thead>
             <tbody>
                 <% 
-                    List<Evenement> list = (List<Evenement>) request.getAttribute("evenements");
-                    if (list != null && !list.isEmpty()) {
-                        for (Evenement e : list) {
+                @SuppressWarnings("unchecked")
+                List<Evenement> list = (List<Evenement>) request.getAttribute("evenements");
+
+                @SuppressWarnings("unchecked")
+                List<Evenement> mesInscriptions = (List<Evenement>) request.getAttribute("mesInscriptions");
+
+                if (list != null && !list.isEmpty()) {
+                    for (Evenement e : list) {
+                    	
+
+                        boolean dejaInscrit = false;
+
+                        if (mesInscriptions != null) {
+                            for (Evenement inscrit : mesInscriptions) {
+                                if (inscrit.getId() == e.getId()) {
+                                    dejaInscrit = true;
+                                    break;
+                                }
+                            }
+                        }
+                        boolean evenementPasse = false;
+
+                        if (e.getDateDebut() != null && e.getDateDebut().isBefore(LocalDateTime.now())) {
+                            evenementPasse = true;
+                        }
+             
                 %>
                 <tr>
                     <td><strong><%= e.getTitre() %></strong></td>
-                    <td><%= e.getDateDebut() %></td>
+                    <td><td><%= e.getDateFormatee() %></td>
                     <td><%= e.getLieu() %></td>
                     <td><span class="badge" style="background-color: #007bff; color: white; padding: 5px 10px; border-radius: 15px;">
                     <%= e.getCategorieNom() %>
                     </span></td>
-                    <td><%= e.getCapacite() %> places</td>
+                    <td><%= e.getPlacesRestantes() %> / <%= e.getCapacite() %> places</td>
                     <td>
                         <%-- Les boutons de gestion sont réservés à l'admin --%>
                         <% if (currentUser != null && "admin".equals(currentUser.getRole())) { %>
-                            <a href="evenement?action=edit&id=<%= e.getId() %>" class="btn btn-edit">Modifier</a>
-                            <a href="evenement?action=delete&id=<%= e.getId() %>" 
-                               class="btn btn-delete" 
-                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
-                               Supprimer
-                            </a>
-                        <% } else { %>
-                            <span style="color: #888; font-style: italic;">Consultation uniquement</span>
-                        <% } %>
+
+						    <a href="evenement?action=edit&id=<%= e.getId() %>" class="btn btn-edit">Modifier</a>
+						
+						    <a href="evenement?action=delete&id=<%= e.getId() %>" 
+						       class="btn btn-delete" 
+						       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+						       Supprimer
+						    </a>
+						
+						<% } else if (currentUser != null) { %>
+
+						    <% if (evenementPasse) { %>
+						
+						        <span style="color: #dc3545; font-weight: bold;">
+						            Événement terminé
+						        </span>
+						
+						    <% } else if (dejaInscrit) { %>
+						
+						        <span style="color: #28a745; font-weight: bold;">
+						            Déjà inscrit
+						        </span>
+						
+						    <% } else { %>
+						
+						        <form action="inscription" method="post" style="display:inline;">
+						            <input type="hidden" name="idEvenement" value="<%= e.getId() %>">
+						            <button type="submit" class="btn" style="background-color:#007bff; color:white;">
+						                S'inscrire
+						            </button>
+						        </form>
+						
+						    <% } %>
+												
+						<% } else { %>
+						
+						    <a href="login.jsp" class="btn" style="background-color:#6c757d; color:white;">
+						        Se connecter pour s'inscrire
+						    </a>
+						
+						<% } %>
                     </td>
                 </tr>
                 <% 

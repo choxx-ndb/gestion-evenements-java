@@ -36,6 +36,12 @@
             <input type="password" name="password" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn-login">Se connecter</button>
+		        <div style="text-align:center; margin-top:20px;">
+		    Pas encore de compte ?
+		    <a href="register" style="color:#007bff; font-weight:bold; text-decoration:none;">
+		        Créer un compte
+		    </a>
+		</div>
     </form>
 </div>
 

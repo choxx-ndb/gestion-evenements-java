@@ -8,8 +8,14 @@
     </div>
     <div>
         <% if (currentUser != null) { %>
-            <span>Bienvenue, <b><%= currentUser.getNom() %></b> (<%= currentUser.getRole() %>)</span>
+            <span>Bienvenue, <b><%= currentUser.getNom() %></b> (<%= currentUser.getRole() %>)</span>    
+            |
+            <a href="mes-inscriptions" style="color:white; margin-right:20px; text-decoration:none;font-weight: bold;">   Mes inscriptions
+		</a>
+            |
             <a href="logout" style="color: #ff4d4d; margin-left: 20px; text-decoration: none; font-weight: bold;">Déconnexion</a>
+		 
         <% } %>
+        
     </div>
 </nav>

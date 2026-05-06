@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="model.Evenement" %>
 <%@ page import="model.Categorie" %>
 <%@ page import="java.util.List" %>
@@ -68,6 +68,7 @@
     <select name="categorie_id" required>
         <option value="">-- Choisir une catégorie --</option>
         <% 
+            @SuppressWarnings("unchecked")
             // On récupère la liste des catégories envoyée par la Servlet
             List<Categorie> cats = (List<Categorie>) request.getAttribute("categories");
             

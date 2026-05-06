@@ -1,11 +1,14 @@
 package servlet;
 
 import jakarta.servlet.ServletException;
+import service.InscriptionService;
+import jakarta.servlet.http.HttpSession;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -21,11 +24,14 @@ public class EvenementServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private EvenementDAO evenementDAO;
     private CategorieDAO categorieDAO;
+    private InscriptionService inscriptionService;
 
     @Override
     public void init() {
+    	
         evenementDAO = new EvenementDAO();
         categorieDAO = new CategorieDAO();
+        inscriptionService = new InscriptionService();
     }
 
     @Override
@@ -80,9 +86,17 @@ public class EvenementServlet extends HttpServlet {
 
     protected void listEvenement(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Evenement> listEvenement = evenementDAO.selectAll();
-        request.setAttribute("evenements", listEvenement);
-        request.getRequestDispatcher("listeEvenements.jsp").forward(request, response);
+    	List<Evenement> evenements = evenementDAO.selectAll();
+    	request.setAttribute("evenements", evenements);
+
+    	HttpSession session = request.getSession(false);
+
+    	if (session != null && session.getAttribute("idUtilisateur") != null) {
+    	    int idUtilisateur = (int) session.getAttribute("idUtilisateur");
+    	    request.setAttribute("mesInscriptions", inscriptionService.listerMesInscriptions(idUtilisateur));
+    	}
+
+    	request.getRequestDispatcher("listeEvenements.jsp").forward(request, response);
     }
 
     protected void showNewForm(HttpServletRequest request, HttpServletResponse response)
@@ -148,4 +162,5 @@ public class EvenementServlet extends HttpServlet {
         
         response.sendRedirect("evenement?action=list");
     }
+   
 }

@@ -97,7 +97,7 @@ public class Evenement {
      */
     public String getDatePourInput() {
         if (dateDebut == null) return "";
-        return dateDebut.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        return dateDebut.format(DateTimeFormatter.ofPattern("yyyy-MM-dd' à 'HH:mm"));
     }
 
     /**
@@ -107,7 +107,7 @@ public class Evenement {
      */
     public String getDateCreationFormatee() {
         if (dateCreation == null) return "";
-        return dateCreation.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        return dateCreation.format(DateTimeFormatter.ofPattern("dd/MM/yyyy ' à ' HH:mm"));
     }
 
     /**
