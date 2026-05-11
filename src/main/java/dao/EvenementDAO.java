@@ -161,4 +161,32 @@ public class EvenementDAO implements CommonDAO<Evenement> {
             ex.printStackTrace();
         }
     }
+    /*public List<Evenement> searchEvenements(String keyword) {
+        List<Evenement> liste = new ArrayList<>();
+        // On cherche dans le titre OU le lieu
+        String sql = "SELECT * FROM evenements WHERE titre LIKE ? OR lieu LIKE ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            // Le % permet de trouver le mot n'importe où dans la phrase
+            String searchPattern = "%" + keyword + "%";
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // Utilise ton constructeur ou tes setters habituels
+                Evenement e = new Evenement();
+                e.setId(rs.getInt("id"));
+                e.setTitre(rs.getString("title"));
+                e.setLieu(rs.getString("lieu"));
+                // ... remplis les autres champs ...
+                liste.add(e);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return liste;
+    }*/
 }

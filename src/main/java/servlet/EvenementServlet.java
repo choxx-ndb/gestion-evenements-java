@@ -3,15 +3,16 @@ package servlet;
 import jakarta.servlet.ServletException;
 import service.InscriptionService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.annotation.MultipartConfig;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.EvenementDAO;
@@ -20,6 +21,7 @@ import model.Evenement;
 import model.Utilisateur;
 
 @WebServlet("/evenement")
+@MultipartConfig
 public class EvenementServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private EvenementDAO evenementDAO;
@@ -28,7 +30,6 @@ public class EvenementServlet extends HttpServlet {
 
     @Override
     public void init() {
-    	
         evenementDAO = new EvenementDAO();
         categorieDAO = new CategorieDAO();
         inscriptionService = new InscriptionService();
@@ -50,6 +51,9 @@ public class EvenementServlet extends HttpServlet {
 
         try {
             switch (action) {
+                case "detail":
+                    showEventDetail(request, response);
+                    break;
                 case "new":
                     showNewForm(request, response);
                     break;
@@ -82,21 +86,95 @@ public class EvenementServlet extends HttpServlet {
         saveOrUpdateEvenement(request, response);
     }
 
-    // --- MÉTHODES DE LOGIQUE ---
-
+    /**
+     * ✅ MODIFIÉ: Ajout de la recherche et du filtrage par catégorie
+     */
     protected void listEvenement(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	List<Evenement> evenements = evenementDAO.selectAll();
-    	request.setAttribute("evenements", evenements);
+        
+        // Récupérer TOUS les événements
+        List<Evenement> tousLesEvenements = evenementDAO.selectAll();
+        List<Evenement> evenementsFiltrés = new ArrayList<>();
+        
+        // Récupérer les paramètres de recherche et filtrage
+        String searchKeyword = request.getParameter("search");
+        String categorieParam = request.getParameter("categorie");
+        
+        // FILTRER les événements
+        for (Evenement e : tousLesEvenements) {
+            boolean matches = true;
+            
+            // Filtrer par recherche (titre + description + lieu)
+            if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+                String keyword = searchKeyword.toLowerCase().trim();
+                boolean titleMatch = e.getTitre().toLowerCase().contains(keyword);
+                boolean descMatch = e.getDescription().toLowerCase().contains(keyword);
+                boolean lieuMatch = e.getLieu().toLowerCase().contains(keyword);
+                
+                matches = titleMatch || descMatch || lieuMatch;
+            }
+            
+            // Filtrer par catégorie
+            if (categorieParam != null && !categorieParam.isEmpty() && matches) {
+                try {
+                    int categorieId = Integer.parseInt(categorieParam);
+                    matches = (e.getCategorieId() == categorieId);
+                } catch (NumberFormatException ex) {
+                    // Si l'ID n'est pas valide, ignorer le filtre
+                }
+            }
+            
+            if (matches) {
+                evenementsFiltrés.add(e);
+            }
+        }
+        
+        // Envoyer les données à la JSP
+        request.setAttribute("evenements", evenementsFiltrés);
+        request.setAttribute("categories", categorieDAO.selectAll());
+        request.setAttribute("searchKeyword", searchKeyword);
+        request.setAttribute("selectedCategory", categorieParam);
+        
+        // Récupérer les inscriptions de l'utilisateur
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("idUtilisateur") != null) {
+            int idUtilisateur = (int) session.getAttribute("idUtilisateur");
+            request.setAttribute("mesInscriptions", inscriptionService.listerMesInscriptions(idUtilisateur));
+        }
 
-    	HttpSession session = request.getSession(false);
+        request.getRequestDispatcher("listeEvenements.jsp").forward(request, response);
+    }
 
-    	if (session != null && session.getAttribute("idUtilisateur") != null) {
-    	    int idUtilisateur = (int) session.getAttribute("idUtilisateur");
-    	    request.setAttribute("mesInscriptions", inscriptionService.listerMesInscriptions(idUtilisateur));
-    	}
-
-    	request.getRequestDispatcher("listeEvenements.jsp").forward(request, response);
+    /**
+     * ✅ NOUVEAU: Afficher les détails d'un événement spécifique
+     */
+    protected void showEventDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Evenement evenement = evenementDAO.getById(id);
+            
+            if (evenement == null) {
+                response.sendRedirect("evenement?action=list");
+                return;
+            }
+            
+            // Envoyer l'événement à la JSP
+            request.setAttribute("evenement", evenement);
+            
+            // Vérifier si l'utilisateur est déjà inscrit
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("idUtilisateur") != null) {
+                int idUtilisateur = (int) session.getAttribute("idUtilisateur");
+                boolean dejaInscrit = inscriptionService.estDejaInscrit(idUtilisateur, id);
+                request.setAttribute("dejaInscrit", dejaInscrit);
+            }
+            
+            request.getRequestDispatcher("evenementDetail.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("evenement?action=list");
+        }
     }
 
     protected void showNewForm(HttpServletRequest request, HttpServletResponse response)
@@ -120,7 +198,6 @@ public class EvenementServlet extends HttpServlet {
 
     protected void deleteEvenement(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        // Optionnel : Vérifier ici si le rôle est bien 'admin' avant de supprimer
         int id = Integer.parseInt(request.getParameter("id"));
         evenementDAO.delete(id);
         response.sendRedirect("evenement?action=list");
@@ -137,7 +214,7 @@ public class EvenementServlet extends HttpServlet {
         int categorieId = Integer.parseInt(request.getParameter("categorie_id"));
         String dateStr = request.getParameter("date_debut");
 
-        // Récupérer l'ID de l'utilisateur connecté pour l'associer à l'événement
+        // Récupérer l'ID de l'utilisateur connecté
         HttpSession session = request.getSession();
         Utilisateur user = (Utilisateur) session.getAttribute("user");
 
@@ -147,7 +224,7 @@ public class EvenementServlet extends HttpServlet {
         ev.setLieu(lieu);
         ev.setCapacite(capacite);
         ev.setCategorieId(categorieId);
-        ev.setOrganisateurId(user.getId()); // Utilisation de l'ID réel de la session
+        ev.setOrganisateurId(user.getId());
         
         if (dateStr != null && !dateStr.isEmpty()) {
             ev.setDateDebut(LocalDateTime.parse(dateStr));
@@ -155,12 +232,16 @@ public class EvenementServlet extends HttpServlet {
 
         if (idStr == null || idStr.isEmpty()) {
             evenementDAO.add(ev);
+            // Message de succès
+            session.setAttribute("message", "✅ Événement créé avec succès!");
         } else {
             ev.setId(Integer.parseInt(idStr));
             evenementDAO.update(ev);
+            // Message de succès
+            session.setAttribute("message", "✅ Événement modifié avec succès!");
         }
         
+        // Rediriger vers la liste
         response.sendRedirect("evenement?action=list");
     }
-   
 }
