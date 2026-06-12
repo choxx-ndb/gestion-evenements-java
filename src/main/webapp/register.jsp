@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #eef1f5;
+            background: grey;
             margin: 0;
         }
 
@@ -17,7 +17,7 @@
             width: 420px;
             margin: 120px auto;
             padding: 35px;
-            background: white;
+            background: #F0FAF6;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
@@ -25,7 +25,7 @@
         h2 {
             text-align: center;
             margin-bottom: 25px;
-            color: #333;
+            color: black;
         }
 
         label {
@@ -33,6 +33,7 @@
             display: block;
             margin-top: 15px;
             margin-bottom: 8px;
+            color: black;
         }
 
         input {
@@ -42,6 +43,13 @@
             border-radius: 5px;
             font-size: 15px;
             box-sizing: border-box;
+            background-color: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: black;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
         }
 
         button {
@@ -49,15 +57,16 @@
             margin-top: 25px;
             padding: 12px;
             border: none;
-            background: #007bff;
+            background: black;
             color: white;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
+            transition: background 0.3s;
         }
 
         button:hover {
-            background: #0056b3;
+            background: grey;
         }
 
         .error {
@@ -82,9 +91,13 @@
         }
 
         .login-link a {
-            color: #007bff;
+            color: black;
             text-decoration: none;
             font-weight: bold;
+        }
+
+        .login-link a:hover {
+            color: grey;
         }
     </style>
 </head>

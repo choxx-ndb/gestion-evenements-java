@@ -12,9 +12,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class Evenement {
 
-    // ════════════════════════════════════════════════════════
-    //  ATTRIBUTS — correspondent aux colonnes de la table SQL
-    // ════════════════════════════════════════════════════════
+    
 
     private int           id;               // INT AUTO_INCREMENT
     private String        titre;            // VARCHAR(200) NOT NULL
@@ -27,11 +25,11 @@ public class Evenement {
     private String        categorieNom;     // Non en BDD : rempli par JOIN SQL
     private int           organisateurId;   // INT (FK → utilisateurs.id)
     private String        organisateurNom;  // Non en BDD : rempli par JOIN SQL
-    private LocalDateTime dateCreation;     // DATETIME DEFAULT CURRENT_TIMESTAMP
+    private LocalDateTime dateCreation;  
+    private String photo; 
 
-    // ════════════════════════════════════════════════════════
-    //  CONSTRUCTEURS
-    // ════════════════════════════════════════════════════════
+
+  
 
     /**
      * Constructeur vide — obligatoire pour JDBC et les frameworks.
@@ -172,4 +170,6 @@ public class Evenement {
 
     public LocalDateTime getDateCreation() { return dateCreation; }
     public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
+    public String getPhoto() {return photo; }
+    public void setPhoto(String photo) {this.photo = photo;}
 }

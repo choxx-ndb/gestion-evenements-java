@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: grey;
             margin: 0;
         }
 
@@ -19,7 +19,7 @@
             width: 90%;
             margin: auto;
             padding: 25px;
-            background: white;
+            background: #F0FAF6;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 8px;
             margin-top: 30px;
@@ -27,6 +27,7 @@
 
         h2 {
             margin-bottom: 20px;
+            color: black;
         }
 
         table {
@@ -42,8 +43,12 @@
         }
 
         th {
-            background-color: #007bff;
+            background-color: black;
             color: white;
+        }
+
+        tr:hover td {
+            background-color: #E6F1FB;
         }
 
         .btn {
@@ -61,10 +66,18 @@
             color: white;
         }
 
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
         .btn-back {
-            background-color: #6c757d;
+            background-color: black;
             color: white;
             margin-bottom: 15px;
+        }
+
+        .btn-back:hover {
+            background-color: grey;
         }
 
         .message {
@@ -80,7 +93,7 @@
             padding: 5px 10px;
             border-radius: 12px;
             font-size: 12px;
-            background: #007bff;
+            background: #333;
             color: white;
         }
     </style>
@@ -146,8 +159,8 @@
             } else {
         %>
             <tr>
-                <td colspan="5" style="text-align:center;">
-                    Vous n’êtes inscrit à aucun événement.
+                <td colspan="5" style="text-align:center; color: #6c757d;">
+                    Vous n'êtes inscrit à aucun événement.
                 </td>
             </tr>
         <%
