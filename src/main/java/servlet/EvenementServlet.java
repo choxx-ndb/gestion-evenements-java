@@ -195,18 +195,31 @@ public class EvenementServlet extends HttpServlet {
             String dateStr      = request.getParameter("date_debut");
  
             // ✅ Récupérer la photo existante (en mode édition)
+            
             String photoExistante = request.getParameter("photoExistante");
  
             HttpSession session = request.getSession();
             Utilisateur user = (Utilisateur) session.getAttribute("user");
- 
+            
             Evenement ev = new Evenement();
+            ev.setOrganisateurId(user.getId());
             ev.setTitre(titre);
             ev.setDescription(description);
             ev.setLieu(lieu);
             ev.setCapacite(capacite);
             ev.setCategorieId(categorieId);
             ev.setOrganisateurId(user.getId());
+         // ✅ Récupérer le prix depuis le formulaire
+            double prix = 0;
+            String prixStr = request.getParameter("prix");
+            if (prixStr != null && !prixStr.isEmpty()) {
+                try {
+                    prix = Double.parseDouble(prixStr);
+                } catch (NumberFormatException ex) {
+                    prix = 0;
+                }
+            }
+            ev.setPrix(prix);
  
             if (dateStr != null && !dateStr.isEmpty()) {
                 ev.setDateDebut(LocalDateTime.parse(dateStr));

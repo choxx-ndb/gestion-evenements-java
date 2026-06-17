@@ -229,7 +229,9 @@
                     <h1><%= evenement.getTitre() %></h1>
                 </div>
                 <div style="text-align: right;">
-                    <div class="event-price">Gratuit</div>
+                    <div class="event-price">
+    					<%= evenement.getPrixAffiche() %>
+					</div>
                 </div>
             </div>
 

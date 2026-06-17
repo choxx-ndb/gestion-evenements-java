@@ -34,7 +34,7 @@
         </div>
         <div class="form-group">
             <label>Mot de passe</label>
-            <input type="password" name="password" placeholder="••••••••" required>
+            <input type="password" name="password" placeholder="" required>
         </div>
         <button type="submit" class="btn-login">Se connecter</button>
         <div style="text-align:center; margin-top:20px;">

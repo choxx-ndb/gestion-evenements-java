@@ -346,7 +346,9 @@
                             </p>
                         </div>
                         <div class="event-price">
-                            <p class="price-amount">Gratuit</p>
+                            <p class="price-amount">
+   								 <%= e.getPrixAffiche() %>
+							</p>
                         </div>
                     </div>
                 </div>

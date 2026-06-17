@@ -279,6 +279,15 @@
 
         <!-- ═══ PANEL 3 : Billetterie ═══ -->
         <div class="panel" id="p2">
+		        <div class="form-group">
+		    <label>Prix (MAD)</label>
+		    <input type="number" 
+		           name="prix" 
+		           min="0" 
+		           step="0.01"
+		           placeholder="0 = Gratuit"
+		           value="<%= (ev != null) ? ev.getPrix() : 0 %>">
+		   </div>
 
             <div class="form-group">
                 <label>Capacité totale</label>
