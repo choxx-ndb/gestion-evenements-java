@@ -8,6 +8,7 @@ public class Evenement {
     private int           id;
     private String        titre;
     private String        description;
+    private double        prix;
     private LocalDateTime dateDebut;
     private String        lieu;
     private int           capacite;
@@ -18,9 +19,7 @@ public class Evenement {
     private String        organisateurNom;
     private LocalDateTime dateCreation;
     private String        photo;
-
-    // ✅ AJOUTÉ : champ prix (0.0 = Gratuit)
-    private double prix;
+    
 
     public Evenement() {}
 
@@ -37,7 +36,6 @@ public class Evenement {
         this.prix            = 0.0;
     }
 
-    // ════ MÉTHODES UTILITAIRES ════
 
     public String getDateFormatee() {
         if (dateDebut == null) return "";
@@ -58,13 +56,11 @@ public class Evenement {
         return placesRestantes > 0;
     }
 
-    // ✅ AJOUTÉ : retourne "Gratuit" ou le prix en MAD
     public String getPrixAffiche() {
         if (prix <= 0) return "Gratuit";
         return String.format("%.2f MAD", prix);
     }
 
-    // ✅ AJOUTÉ : retourne true si l'événement est gratuit
     public boolean isGratuit() {
         return prix <= 0;
     }
@@ -78,7 +74,7 @@ public class Evenement {
              + ", prix=" + getPrixAffiche() + '}';
     }
 
-    // ════ GETTERS ET SETTERS ════
+    //GETTERS ET SETTERS
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -109,6 +105,9 @@ public class Evenement {
 
     public int getOrganisateurId() { return organisateurId; }
     public void setOrganisateurId(int organisateurId) { this.organisateurId = organisateurId; }
+    
+    public double getPrix() { return prix; }
+    public void setPrix(double prix) { this.prix = prix; }
 
     public String getOrganisateurNom() { return organisateurNom; }
     public void setOrganisateurNom(String organisateurNom) { this.organisateurNom = organisateurNom; }
@@ -119,7 +118,5 @@ public class Evenement {
     public String getPhoto() { return photo; }
     public void setPhoto(String photo) { this.photo = photo; }
 
-    // ✅ AJOUTÉ : getter/setter prix
-    public double getPrix() { return prix; }
-    public void setPrix(double prix) { this.prix = prix; }
+    
 }

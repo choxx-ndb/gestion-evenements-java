@@ -26,9 +26,8 @@ public class InscriptionServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // ✅ FIX SESSION : rediriger vers "/login" (Servlet) et non "login.jsp" (fichier)
         if (session == null || session.getAttribute("idUtilisateur") == null) {
-            response.sendRedirect("login"); // ← WAS "login.jsp" → causait le problème !
+            response.sendRedirect("login"); 
             return;
         }
 

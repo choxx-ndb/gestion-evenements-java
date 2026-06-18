@@ -26,7 +26,6 @@ public class UtilisateurDAO {
                     user.setNom(rs.getString("nom"));
                     user.setEmail(rs.getString("email"));
                     user.setRole(rs.getString("role"));
-                    // On ne stocke pas forcément le mot de passe en session pour la sécurité
                 }
             }
         } catch (SQLException e) {

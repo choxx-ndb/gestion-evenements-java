@@ -42,11 +42,10 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("idUtilisateur", user.getId());  
             session.setAttribute("nom", user.getNom());
             session.setAttribute("role", user.getRole());
-            
-            // Redirection vers la liste des événements
+           
             response.sendRedirect("evenement?action=list");
         } else {
-            // Retour au login avec message d'erreur
+            
             request.setAttribute("erreur", "Email ou mot de passe incorrect.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }

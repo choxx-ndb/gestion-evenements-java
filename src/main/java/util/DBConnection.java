@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DBConnection {
     // Configuration de la base de données
     // On garde le fuseau horaire de Casablanca comme dans ton code original
-    private static final String URL = "jdbc:mysql://localhost:3307/gestion_evenements"
+    private static final String URL = "jdbc:mysql://localhost:3306/gestion_evenements"
                                     + "?useSSL=false&serverTimezone=Africa/Casablanca";
     private static final String USER = "root";
     private static final String PASSWORD = "";

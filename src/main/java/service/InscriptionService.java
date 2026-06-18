@@ -99,6 +99,7 @@ public class InscriptionService {
 
         return "Inscription annulée avec succès.";
     }
+    
     public List<Evenement> listerMesInscriptions(int idUtilisateur) {
         if (idUtilisateur <= 0) {
             return new ArrayList<>();
@@ -106,6 +107,7 @@ public class InscriptionService {
 
         return inscriptionDAO.listerInscriptionsParUtilisateur(idUtilisateur);
     }
+    
     public boolean estDejaInscrit(int idUtilisateur, int idEvenement) {
         if (idUtilisateur <= 0 || idEvenement <= 0) {
             return false;

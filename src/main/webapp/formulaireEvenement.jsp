@@ -6,7 +6,6 @@
     @SuppressWarnings("unchecked")
     List<Categorie> cats = (List<Categorie>) request.getAttribute("categories");
 
-    // Photo existante (en mode édition)
     String photoExistante = (ev != null && ev.getPhoto() != null) ? ev.getPhoto() : "";
 %>
 <!DOCTYPE html>
@@ -166,10 +165,6 @@
         <button class="tab-btn"        onclick="goTo(2)">Billetterie</button>
     </div>
 
-    <%-- ══════════════════════════════════════════════════════════
-         CORRECTION PRINCIPALE : enctype="multipart/form-data"
-         OBLIGATOIRE pour que le fichier image soit envoyé !
-    ══════════════════════════════════════════════════════════ --%>
     <form action="evenement" method="post"
           enctype="multipart/form-data"
           id="mainForm">
@@ -181,7 +176,6 @@
         <%-- Conserver la photo existante si aucune nouvelle n'est uploadée --%>
         <input type="hidden" name="photoExistante" value="<%= photoExistante %>">
 
-        <!-- ═══ PANEL 1 : Infos générales ═══ -->
         <div class="panel active" id="p0">
 
             <%-- ZONE UPLOAD IMAGE --%>
@@ -239,7 +233,6 @@
             </div>
         </div>
 
-        <!-- ═══ PANEL 2 : Date & Lieu ═══ -->
         <div class="panel" id="p1">
 
             <div class="form-group">
@@ -277,7 +270,7 @@
             </div>
         </div>
 
-        <!-- ═══ PANEL 3 : Billetterie ═══ -->
+        <!-- PANEL 3 : Billetterie-->
         <div class="panel" id="p2">
 		        <div class="form-group">
 		    <label>Prix (MAD)</label>
@@ -370,9 +363,7 @@
         }
     }
 
-    /* ══════════════════════════════════════════
-       Aperçu de l'image avant upload
-    ══════════════════════════════════════════ */
+  
     function previewImg(input) {
         if (!input.files || !input.files[0]) return;
 

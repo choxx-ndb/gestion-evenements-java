@@ -4,11 +4,9 @@ public class Categorie {
     private int id;
     private String nom;
 
-    // Constructeur vide (nécessaire pour les Java Beans)
     public Categorie() {
     }
 
-    // Constructeur avec paramètres
     public Categorie(int id, String nom) {
         this.id = id;
         this.nom = nom;
@@ -31,7 +29,6 @@ public class Categorie {
         this.nom = nom;
     }
 
-    // Optionnel : toString pour faciliter le débogage
     @Override
     public String toString() {
         return "Categorie [id=" + id + ", nom=" + nom + "]";

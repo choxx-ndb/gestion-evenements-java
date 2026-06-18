@@ -8,15 +8,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;                            // ✅ AJOUTÉ
+import jakarta.servlet.http.Part;                          
  
-import java.io.File;                                         // ✅ AJOUTÉ
+import java.io.File;                                       
 import java.io.IOException;
-import java.nio.file.Paths;                                  // ✅ AJOUTÉ
+import java.nio.file.Paths;                               
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;                                       // ✅ AJOUTÉ
+import java.util.UUID;                  
  
 import dao.EvenementDAO;
 import dao.CategorieDAO;
@@ -24,16 +24,16 @@ import model.Evenement;
 import model.Utilisateur;
  
 @WebServlet("/evenement")
-// ✅ CONFIG MULTIPART : OBLIGATOIRE pour recevoir des fichiers
+//CONFIG MULTIPART OBLIGATOIRE pour recevoir des fichiers
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024,      // 1 Mo en mémoire
-    maxFileSize       = 1024 * 1024 * 5,  // 5 Mo max par fichier
-    maxRequestSize    = 1024 * 1024 * 10  // 10 Mo total
+    fileSizeThreshold = 1024 * 1024,      
+    maxFileSize       = 1024 * 1024 * 5, 
+    maxRequestSize    = 1024 * 1024 * 10  
 )
 public class EvenementServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
  
-    // ✅ Dossier où seront sauvegardées les images
+    //Dossier où seront sauvegardées les images
     private static final String UPLOAD_DIR = "uploads";
  
     private EvenementDAO evenementDAO;
@@ -179,9 +179,8 @@ public class EvenementServlet extends HttpServlet {
         response.sendRedirect("evenement?action=list");
     }
  
-    /**
-     * ✅ MÉTHODE MODIFIÉE : Gère maintenant l'upload de photo
-     */
+    //✅ MÉTHODE MODIFIÉE : Gère maintenant l'upload de photo
+     
     protected void saveOrUpdateEvenement(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
  
@@ -194,7 +193,7 @@ public class EvenementServlet extends HttpServlet {
             int    categorieId  = Integer.parseInt(request.getParameter("categorie_id"));
             String dateStr      = request.getParameter("date_debut");
  
-            // ✅ Récupérer la photo existante (en mode édition)
+            // Récupérer la photo existante (en mode édition)
             
             String photoExistante = request.getParameter("photoExistante");
  
@@ -202,6 +201,7 @@ public class EvenementServlet extends HttpServlet {
             Utilisateur user = (Utilisateur) session.getAttribute("user");
             
             Evenement ev = new Evenement();
+            
             ev.setOrganisateurId(user.getId());
             ev.setTitre(titre);
             ev.setDescription(description);
@@ -225,9 +225,8 @@ public class EvenementServlet extends HttpServlet {
                 ev.setDateDebut(LocalDateTime.parse(dateStr));
             }
  
-            // ═══════════════════════════════════════════════════════
-            // ✅ GESTION DE L'UPLOAD DE LA PHOTO
-            // ═══════════════════════════════════════════════════════
+            
+            //GESTION DE L'UPLOAD DE LA PHOTO
             String nomPhoto = handlePhotoUpload(request, photoExistante);
             ev.setPhoto(nomPhoto);
  
@@ -238,11 +237,11 @@ public class EvenementServlet extends HttpServlet {
  
             if (idStr == null || idStr.isEmpty()) {
                 evenementDAO.add(ev);
-                session.setAttribute("message", "✅ Événement créé avec succès!");
+                session.setAttribute("message", "Événement créé avec succès!");
             } else {
                 ev.setId(Integer.parseInt(idStr));
                 evenementDAO.update(ev);
-                session.setAttribute("message", "✅ Événement modifié avec succès!");
+                session.setAttribute("message", "Événement modifié avec succès!");
             }
  
             response.sendRedirect("evenement?action=list");
@@ -253,23 +252,23 @@ public class EvenementServlet extends HttpServlet {
         }
     }
  
-    /**
-     * ✅ NOUVELLE MÉTHODE : Sauvegarde le fichier image sur le disque
-     * @return Le nom unique du fichier sauvegardé (ou photoExistante si pas de nouveau fichier)
-     */
+    
+      // NOUVELLE MÉTHODE : Sauvegarde le fichier image sur le disque
+      // @return Le nom unique du fichier sauvegardé (ou photoExistante si pas de nouveau fichier)
+     
     private String handlePhotoUpload(HttpServletRequest request, String photoExistante)
             throws IOException, ServletException {
  
-        // 1. Récupérer le fichier uploadé depuis le formulaire
+        // Récupérer le fichier uploadé depuis le formulaire
         Part filePart = request.getPart("cover");
  
-        // 2. Si aucun fichier n'a été choisi, garder l'ancienne photo
+        // Si aucun fichier n'a été choisi, on gardonsl'ancienne photo
         if (filePart == null || filePart.getSize() == 0) {
             System.out.println("Pas de nouvelle photo → on garde : " + photoExistante);
             return (photoExistante != null && !photoExistante.isEmpty()) ? photoExistante : null;
         }
  
-        // 3. Récupérer le nom original du fichier
+        // Récupérer le nom original du fichier
         String originalFileName = Paths.get(filePart.getSubmittedFileName())
                                        .getFileName().toString();
  
@@ -277,28 +276,28 @@ public class EvenementServlet extends HttpServlet {
             return photoExistante;
         }
  
-        // 4. Générer un nom UNIQUE pour éviter les conflits
+        // Générer un nom UNIQUE pour éviter les conflits
         // Exemple : "image.jpg" → "1abc234-image.jpg"
         String uniqueFileName = UUID.randomUUID().toString().substring(0, 8) + "-" + originalFileName;
  
-        // 5. Déterminer le chemin du dossier uploads
+        // Déterminer le chemin du dossier uploads
         // Le fichier sera dans : <Tomcat>/webapps/<contextPath>/uploads/
         String uploadPath = getServletContext().getRealPath("/") + UPLOAD_DIR;
  
-        // 6. Créer le dossier s'il n'existe pas
+        // Créer le dossier s'il n'existe pas
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
             System.out.println("Dossier uploads créé : " + uploadPath);
         }
  
-        // 7. Sauvegarder le fichier sur le disque
+        // Sauvegarder le fichier sur le disque
         String filePath = uploadPath + File.separator + uniqueFileName;
         filePart.write(filePath);
  
         System.out.println("✅ Photo sauvegardée : " + filePath);
  
-        // 8. Retourner uniquement le nom du fichier (pour la BD)
+        // Retourner uniquement le nom du fichier (pour la BD)
         return uniqueFileName;
     }
 }

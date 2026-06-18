@@ -6,7 +6,6 @@ import java.util.List;
 import model.Categorie;
 import util.DBConnection;
 
-// On précise que ce DAO gère des objets de type Categorie
 public class CategorieDAO implements CommonDAO<Categorie> {
 
     @Override
@@ -31,27 +30,24 @@ public class CategorieDAO implements CommonDAO<Categorie> {
         return liste;
     }
 
-    // Même si tu ne les utilises pas tout de suite pour les catégories, 
-    // l'interface t'oblige à les déclarer.
+    
     
     @Override
     public void add(Categorie c) {
-        // Optionnel pour le moment
+        
     }
 
     @Override
     public void update(Categorie c) {
-        // Optionnel pour le moment
+       
     }
 
     @Override
     public void delete(int id) {
-        // Optionnel pour le moment
     }
 
     @Override
     public Categorie getById(int id) {
-        // Utile si tu veux retrouver une catégorie spécifique par son ID
         return null; 
     }
 }

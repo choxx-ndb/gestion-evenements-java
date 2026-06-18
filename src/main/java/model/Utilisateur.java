@@ -1,10 +1,11 @@
 package model;
 
 public class Utilisateur {
+	
     private int id;
     private String nom;
     private String email;
-    private String motDePass; // Correspond à mot_de_pass dans ton SQL
+    private String motDePass;
     private String role;
 
     public Utilisateur() {}

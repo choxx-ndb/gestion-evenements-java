@@ -29,13 +29,12 @@ public class EvenementDAO implements CommonDAO<Evenement> {
                 e.setPhoto(rs.getString("photo"));
                 e.setCapacite(rs.getInt("capacite"));
                 e.setPlacesRestantes(rs.getInt("places_restantes"));
+                e.setPrix(rs.getDouble("prix"));
                 e.setCategorieId(rs.getInt("categorie_id"));
                 e.setCategorieNom(rs.getString("categorieNom"));
                 e.setOrganisateurId(rs.getInt("organisateur_id"));
                 e.setOrganisateurNom(rs.getString("organisateurNom"));
-
-                // ✅ FIX PRIX : lire depuis la BD
-                e.setPrix(rs.getDouble("prix"));
+                
 
                 Timestamp tsDebut = rs.getTimestamp("date_debut");
                 if (tsDebut != null) e.setDateDebut(tsDebut.toLocalDateTime());
@@ -54,7 +53,6 @@ public class EvenementDAO implements CommonDAO<Evenement> {
 
     @Override
     public void add(Evenement e) {
-        // ✅ FIX PRIX : ajout de la colonne prix dans l'INSERT
         String sql = "INSERT INTO evenements (titre, description, date_debut, lieu, photo, " +
                      "capacite, places_restantes, prix, categorie_id, organisateur_id) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -74,12 +72,13 @@ public class EvenementDAO implements CommonDAO<Evenement> {
             ps.setString(4, e.getLieu());
             ps.setString(5, e.getPhoto());
             ps.setInt(6, e.getCapacite());
-            ps.setInt(7, e.getCapacite()); // places_restantes = capacite au départ
-            ps.setDouble(8, e.getPrix());  // ✅ FIX PRIX
+            ps.setInt(7, e.getCapacite());
+            ps.setDouble(8, e.getPrix()); 
             ps.setInt(9, e.getCategorieId());
             ps.setInt(10, e.getOrganisateurId());
 
             ps.executeUpdate();
+            
             System.out.println("Evenement ajouté : " + e.getTitre()
                 + " | Prix=" + e.getPrix()
                 + " | OrgId=" + e.getOrganisateurId());
@@ -115,19 +114,13 @@ public class EvenementDAO implements CommonDAO<Evenement> {
                     e.setPhoto(rs.getString("photo"));
                     e.setCapacite(rs.getInt("capacite"));
                     e.setPlacesRestantes(rs.getInt("places_restantes"));
+                    e.setPrix(rs.getDouble("prix"));
                     e.setCategorieId(rs.getInt("categorie_id"));
                     e.setCategorieNom(rs.getString("categorieNom"));
                     e.setOrganisateurId(rs.getInt("organisateur_id"));
-
-                    // ✅ FIX ORGANISATEUR : ligne manquante dans votre code !
                     e.setOrganisateurNom(rs.getString("organisateurNom"));
-
-                    // ✅ FIX PRIX : lire depuis la BD
-                    e.setPrix(rs.getDouble("prix"));
-
                     Timestamp ts = rs.getTimestamp("date_debut");
                     if (ts != null) e.setDateDebut(ts.toLocalDateTime());
-
                     Timestamp tsCrea = rs.getTimestamp("date_creation");
                     if (tsCrea != null) e.setDateCreation(tsCrea.toLocalDateTime());
                 }
@@ -141,8 +134,7 @@ public class EvenementDAO implements CommonDAO<Evenement> {
 
     @Override
     public void update(Evenement e) {
-        // ✅ FIX PRIX : ajout de prix dans l'UPDATE
-        String sql = "UPDATE evenements SET titre=?, description=?, date_debut=?, lieu=?, " +
+    	String sql = "UPDATE evenements SET titre=?, description=?, date_debut=?, lieu=?, " +
                      "photo=?, prix=?, capacite=?, categorie_id=? WHERE id=?";
 
         try (Connection con = DBConnection.getConnection();
@@ -153,7 +145,7 @@ public class EvenementDAO implements CommonDAO<Evenement> {
             ps.setTimestamp(3, Timestamp.valueOf(e.getDateDebut()));
             ps.setString(4, e.getLieu());
             ps.setString(5, e.getPhoto());
-            ps.setDouble(6, e.getPrix());    // ✅ FIX PRIX
+            ps.setDouble(6, e.getPrix());
             ps.setInt(7, e.getCapacite());
             ps.setInt(8, e.getCategorieId());
             ps.setInt(9, e.getId());
